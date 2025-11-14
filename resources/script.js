@@ -73,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     bounds: container,           // critical: lets Draggable compute proper min/max
     edgeResistance: 0.65,
     allowContextMenu: true,
+      zIndexBoost: false,
     onPress() {
       // stop any active fling
       if (physicsStop) physicsStop();
