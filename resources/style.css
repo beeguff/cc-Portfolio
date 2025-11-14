@@ -233,6 +233,7 @@ header {
   width: 50%;
   max-width: 300px;
   aspect-ratio: 1 / 1;
+  z-index: 1;
   height: auto;
   border-radius: var(--radMed);
   overflow: hidden;
