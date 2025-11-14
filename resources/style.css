@@ -1,0 +1,423 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "omnes-cond", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+:root {
+
+  --colorPrimary: #23a6d5;
+  --colorSecondary: #23d5ab;
+  --colorTertiary: #e73c7e;
+  --accentPrimary: #ee7752;
+  --accentSecondary: #9b59b6;
+  --neutralMedium: #62788f;
+  --projColor1: var(--colorTertiary); /* alternate purple #5432ab */
+  --projColor2: var(--neutralMedium);
+  --projColor3: var(--colorPrimary);
+  --radMed: 16px;
+  --radSm: 8px;
+  --radLg: 24px;
+  --timingReg: all 0.3s ease-out;
+  --timingSnappy: all 0.15s ease-out;
+  --timingSlow: all 0.5s ease-out;
+  --gradientAll: linear-gradient(-45deg, var(--colorPrimary), var(--colorSecondary), var(--colorTertiary), var(--accentPrimary), var(--accentSecondary));
+  --heroHeight: 75vh;
+  timeline-scope: --hero;   /* expose the hero’s named timeline to the page */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "ohno-softie-variable", sans-serif;
+    font-variation-settings: "wght" 600;
+}
+
+.eyebrow {
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    opacity: 0.65;
+    letter-spacing: 0.0625rem;
+}
+
+/* ----- NAV ----- */
+
+.hero {
+  view-timeline-name: --hero;
+  view-timeline-axis: block;
+  height: var(--heroHeight);
+  position: relative;
+}
+
+/* Fixed nav, transparent base, isolate stacking so ::before can go behind */
+nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+  background: transparent;
+  isolation: isolate;           /* lets ::before sit behind links */
+}
+
+/* Gradient overlay (paused + invisible by default) */
+nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--gradientAll);
+  background-size: 400% 400%;
+  opacity: 0;
+  animation: gradient 15s linear infinite;
+  animation-play-state: paused; /* don't animate until turned on */
+}
+
+/* When scrolled past hero, fade it in & start animating */
+.nav-on::before {
+  opacity: 1;
+  animation-play-state: running;
+  transition: opacity 250ms ease;  /* smooth reveal */
+}
+
+/* Optional: respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  nav::before { animation: none; }
+}
+
+nav ul{
+    font-family: "omnes-narrow", sans-serif;
+    font-weight: bold;
+    font-size: 1.125rem;
+    letter-spacing: 0.1rem;
+    color: white;
+    list-style: none;
+    display: flex;
+    gap: 24px;
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+.navName {
+    font-family: "ohno-softie-variable", sans-serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 2.5rem;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+}
+
+.navpersand {
+    font-family: "ohno-softie-variable", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: 0.1rem;
+}
+
+
+/* ----- HERO ----- */
+.hero {
+  view-timeline-name: --hero;
+  view-timeline-axis: block;
+  min-height: var(--heroHeight);
+  background-image: ;
+}
+
+.hero h1 {
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.15rem;
+    font-size: 4rem;
+    z-index: 3;
+}
+
+.hero h3 {
+    color: white;
+    text-align: center;
+    letter-spacing: 0.1rem;
+    font-size: 1.5rem;
+    z-index: 3;
+    opacity: 0.75;
+}
+
+header {
+    width: 100%;
+    height: var(--heroHeight);
+    background: var(--gradientAll);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.heroText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    color: white;
+    z-index: 3;
+}
+
+.background-video {
+    width: 100vw;
+    height: var(--heroHeight);
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    z-index: 2; 
+    filter: grayscale(100%) brightness(115%);
+    mix-blend-mode: multiply;
+    opacity: 0.75;
+}
+
+/* ----- ABOUT ----- */
+.aboutContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    padding: 80px;
+    background-color: beige;
+}
+
+.aboutContent {
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+      animation: transScroll linear both;
+  animation-timeline: view();
+  animation-range: entry 0% to exit 75%;
+}
+
+@keyframes transScroll{
+  from { transform: translate(20px); }
+  to   { transform: translate(0px); }
+}
+
+.aboutContent h2 {
+    font-size: 2rem;
+}
+
+
+.aboutImageWrapper {
+  width: 50%;
+  max-width: 300px;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  border-radius: var(--radMed);
+  overflow: hidden;
+  animation: rotateScroll linear both;
+  animation-timeline: view();
+  animation-range: entry 0% to exit 80%;
+}
+
+@keyframes rotateScroll{
+  from { transform: rotate(-3deg) scale(0.875); }
+  to   { transform: rotate(5deg) scale(1.125); }
+}
+
+.aboutImageWrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--timingReg);
+}
+
+
+/* ----- PROJECTS ----- */
+.projectSection {
+    padding: 96px 48px 124px;
+    width: 100%;
+    background-color: var(--colorSecondary);
+    transition: var(--timingSnappy);
+}
+
+.projectSection h2 {
+    text-align: left;
+    font-size: 2.5rem;
+    color: white;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.projectsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    gap: 32px;
+    max-width: 1400px;
+}
+
+.projectCard {
+    border-radius: var(--radMed);
+    box-shadow: 0 2px 18px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    width: 33%;
+    overflow: hidden;
+}
+
+.projectImgContainer {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+}
+
+.projectCard img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.projectText{
+    padding: 16px 24px 24px;
+    margin-top: -2px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: white;
+}
+.projectTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.projectDescription {
+    font-size: 1rem;
+    color: #333;
+}
+
+.leftCard {
+    transform: translateY(20px) rotate(-2deg);
+    --projColor: var(--projColor1);
+}
+
+.centerCard {
+    transform: translateY(-20px);
+    --projColor: var(--projColor2);
+}
+
+.rightCard {
+    transform: translateY(20px) rotate(2deg);
+    --projColor: var(--projColor3);
+}
+
+.projectCard,
+.projectCard img,
+.projectText,
+.projectTitle,
+.projectText p {
+    transition: var(--timingReg);
+}
+
+.projectCard:hover {
+    border-radius: var(--radLg);
+    box-shadow: 0 2px 30px rgba(0, 0, 0, 0.15);
+}
+
+.projectCard.leftCard:hover {
+    transform: translateY(18px) rotate(-4deg);
+    color: var(--projColor1);
+}
+.projectCard.leftCard:hover img {
+    transform: scale(1.25) rotate(3deg);
+}
+
+.projectCard.centerCard:hover {
+    transform: translateY(-18px) rotate(2deg);
+    color: var(--projColor2);
+}
+.projectCard.centerCard:hover img {
+    transform: scale(1.25) rotate(-2deg);
+}
+
+.projectCard.rightCard:hover {
+    transform: translateY(18px) rotate(4deg);
+    color: var(--projColor3);
+}
+
+.projectCard.rightCard:hover img {
+    transform: scale(1.25) rotate(-3deg);
+}
+
+/* ----- TOOLS ----- */
+
+.toolSection {
+    padding: 64px 48px;
+    width: 100%;
+    background-color: white;
+    transition: var(--timingSnappy);
+}
+
+.toolGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 0 auto;
+    max-width: 640px;
+}
+
+.tool {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radMed);
+    box-shadow: 0 0 18px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.tool img {
+    width: 50%;
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.5;
+}
+
+.tool:hover img {
+    filter: none;
+    opacity: 1;
+}
+
+/* ----- FOOTER ----- */
+footer {
+    padding: 32px;
+    text-align: center;
+    color: white;
+    font-size: 0.875rem;
+    background: var(--gradientAll);
+    background-size: 400% 400%;
+    animation: gradient 20s ease infinite;
+    
+}
