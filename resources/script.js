@@ -169,3 +169,64 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.ticker.add(tick);
   }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Register GSAP + Inertia if available
+  try { gsap.registerPlugin(InertiaPlugin); } catch (e) {}
+
+  const root = document.querySelector('.toolGrid');
+  if (!root) return;
+
+  let oldX = 0, oldY = 0, deltaX = 0, deltaY = 0;
+
+  // Track mouse movement velocity
+  root.addEventListener('mousemove', (e) => {
+    deltaX = e.clientX - oldX;
+    deltaY = e.clientY - oldY;
+    oldX = e.clientX;
+    oldY = e.clientY;
+  });
+
+  // Apply the interaction to each .tool element
+  root.querySelectorAll('.tool').forEach((tile) => {
+    gsap.set(tile, { willChange: 'transform', transformOrigin: '50% 50%' });
+
+    tile.addEventListener('mouseenter', () => {
+      gsap.killTweensOf(tile);
+
+      const wiggle = {
+        duration: 0.4,
+        rotate: (Math.random() - 0.5) * 20, // smaller tilt range (-10° to +10°)
+        yoyo: true,
+        repeat: 1,
+        ease: 'power1.inOut'
+      };
+
+      if (gsap.plugins.InertiaPlugin) {
+        // Real inertia motion (requires InertiaPlugin)
+        const tl = gsap.timeline({ onComplete() { tl.kill(); } });
+        tl.to(tile, {
+          inertia: {
+            x: { velocity: deltaX * 20, end: 0 },
+            y: { velocity: deltaY * 20, end: 0 }
+          }
+        });
+        tl.fromTo(tile, { rotate: 0, scale: 1 }, { ...wiggle, scale: 1.05 }, '<');
+      } else {
+        // Fallback pseudo inertia
+        const pushX = gsap.utils.clamp(-50, 50, deltaX * 6);
+        const pushY = gsap.utils.clamp(-50, 50, deltaY * 6);
+
+        const tl = gsap.timeline({ onComplete() { tl.kill(); } });
+        tl.to(tile, { x: `+=${pushX}`, y: `+=${pushY}`, duration: 0.18, ease: 'power2.out' });
+        tl.to(tile, { x: 0, y: 0, duration: 0.5, ease: 'power3.out' }, '>');
+        tl.fromTo(tile, { rotate: 0, scale: 1 }, { ...wiggle, scale: 1.05 }, '<');
+      }
+    });
+
+    // Smoothly reset when leaving
+    tile.addEventListener('mouseleave', () => {
+      gsap.to(tile, { x: 0, y: 0, rotate: 0, scale: 1, duration: 0.35, ease: 'power2.out' });
+    });
+  });
+});
