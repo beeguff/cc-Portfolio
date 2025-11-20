@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   
-    // 1. NAV SCROLL OBSERVER (Kept the optimization here as it was purely functional)
+    // 1. NAV SCROLL OBSERVER
     const nav = document.querySelector('nav');
     const hero = document.querySelector('.hero');
     
@@ -22,40 +22,110 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. PROJECT BACKGROUND EFFECTS
     const projectSection = document.querySelector('.projectSection');
     const cards = document.querySelectorAll('.projectCard');
+    const bgOverlay = document.createElement('div');
     
-    // Check for hover capability to prevent sticky hover states on mobile
-    if (projectSection && window.matchMedia('(hover: hover)').matches) {
-        const bgOverlay = document.createElement('div');
+    if (projectSection) {
         bgOverlay.classList.add('project-bg-overlay');
         projectSection.appendChild(bgOverlay);
-
-        cards.forEach(card => {
-            const cardColor = getComputedStyle(card).getPropertyValue('--projColor');
-            const imgSrc = card.querySelector('img')?.src || '';
-
-            card.addEventListener('mouseenter', () => {
-                projectSection.style.backgroundColor = cardColor;
-                if (imgSrc) {
-                    bgOverlay.style.backgroundImage = `url(${imgSrc})`;
-                    bgOverlay.style.opacity = '0.15';
-                }
-            });
-
-            card.addEventListener('mouseleave', () => {
-                projectSection.style.backgroundColor = '';
-                bgOverlay.style.opacity = '0';
-            });
-        });
     }
 
+    // 2.1. DESKTOP: Hover Interaction
+    // We use a matchMedia listener here too, so it turns off if you shrink the screen
+    const hoverMedia = window.matchMedia('(hover: hover) and (min-width: 769px)');
+    
+    function handleDesktopHover(e) {
+        if (e.matches) {
+            // Enable Hover Listeners
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', onCardEnter);
+                card.addEventListener('mouseleave', onCardLeave);
+            });
+        } else {
+            // Remove Hover Listeners (cleanup)
+            cards.forEach(card => {
+                card.removeEventListener('mouseenter', onCardEnter);
+                card.removeEventListener('mouseleave', onCardLeave);
+            });
+            // Reset styles
+            resetProjectStyles();
+        }
+    }
+
+    // 2.2. MOBILE: Scroll Interaction (Center Line Trigger)
+    const mobileMedia = window.matchMedia('(max-width: 768px)');
+    let scrollObserver = null;
+
+    function handleMobileScroll(e) {
+        if (e.matches) {
+            // Create Observer if it doesn't exist
+            if (!scrollObserver) {
+                const observerOptions = {
+                    root: null,
+                    // This creates a "trigger line" in the exact center of the viewport
+                    rootMargin: "-50% 0px -50% 0px", 
+                    threshold: 0
+                };
+
+                scrollObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const cardColor = getComputedStyle(entry.target).getPropertyValue('--projColor');
+                            projectSection.style.backgroundColor = cardColor;
+                        }
+                    });
+                }, observerOptions);
+            }
+            
+            // Start observing
+            cards.forEach(card => scrollObserver.observe(card));
+            
+        } else {
+            // Disconnect observer if we go back to desktop
+            if (scrollObserver) {
+                scrollObserver.disconnect();
+            }
+            resetProjectStyles();
+        }
+    }
+
+    // Helper functions to keep code clean
+    function onCardEnter(e) {
+        const card = e.currentTarget;
+        const cardColor = getComputedStyle(card).getPropertyValue('--projColor');
+        const imgSrc = card.querySelector('img')?.src || '';
+        
+        projectSection.style.backgroundColor = cardColor;
+        if (imgSrc) {
+            bgOverlay.style.backgroundImage = `url(${imgSrc})`;
+            bgOverlay.style.opacity = '0.15';
+        }
+    }
+
+    function onCardLeave() {
+        resetProjectStyles();
+    }
+
+    function resetProjectStyles() {
+        if (projectSection) projectSection.style.backgroundColor = '';
+        if (bgOverlay) bgOverlay.style.opacity = '0';
+    }
+
+    // Initialize Listeners
+    hoverMedia.addEventListener('change', handleDesktopHover);
+    mobileMedia.addEventListener('change', handleMobileScroll);
+
+    // Run once on load to check initial state
+    handleDesktopHover(hoverMedia);
+    handleMobileScroll(mobileMedia);
+
+
     // 3. HERO FONT WEIGHT PROXIMITY
-    // Only run on devices with a mouse (pointer: fine) to save battery on mobile
-    if (window.matchMedia('(pointer: fine)').matches) {
+    // Only run on Desktop (min-width: 768px)
+    if (window.matchMedia('(min-width: 768px)').matches) {
         const heroTitle = document.querySelector('.heroText h1');
         
         if (heroTitle) {
             const text = heroTitle.textContent;
-            // Re-wrap logic
             heroTitle.innerHTML = text.split('').map(char => 
                 char === ' ' ? '<span>&nbsp;</span>' : `<span>${char}</span>`
             ).join('');
@@ -95,9 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 4. RESTORED: FLING PHYSICS (About Image)
-    // Wrapped in a check to prevent it from fighting vertical page scrolling on mobile
-    if (window.matchMedia("(min-width: 1024px)").matches) {
+    // 4. FLING PHYSICS (About Image)
+    if (window.matchMedia("(min-width: 768px)").matches) {
         gsap.registerPlugin(Draggable);
         const container = document.querySelector('.aboutContainer');
         const frame = document.querySelector('.aboutImageWrapper');
@@ -197,9 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 5. RESTORED: COMPLEX TOOL INERTIA
-    // Wrapped so it only runs on desktop (mouse)
-    if (window.matchMedia("(min-width: 1024px)").matches) {
+    // 5. COMPLEX TOOL INERTIA
+    if (window.matchMedia("(min-width: 768px)").matches) {
         try { gsap.registerPlugin(InertiaPlugin); } catch (e) {}
 
         const root = document.querySelector('.toolGrid');

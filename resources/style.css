@@ -263,6 +263,10 @@ nav a:hover {
     pointer-events: none; /* Prevents dragging the img element itself */
 }
 
+.aboutImageWrapper:hover img {
+    transform: scale(1.05) rotate(2deg);
+}
+
 /* ----- PROJECTS ----- */
 .projectSection {
     position: relative;
@@ -270,7 +274,9 @@ nav a:hover {
     padding: 124px 48px 148px;
     width: 100%;
     background-color: var(--colorSecondary);
-    transition: background-color 0.3s ease-out;
+    
+    /* Specific transition for performance */
+    transition: background-color 0.3s ease-out; 
 }
 
 .project-bg-overlay {
@@ -493,6 +499,9 @@ footer {
         padding: 64px 24px;
         gap: 32px;
     }
+    .aboutImageWrapper {
+    cursor: default; /* Disable grab cursor on mobile */
+}
 
     /* PROJECTS */
     .projectSection {
