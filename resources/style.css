@@ -153,7 +153,7 @@ nav a:hover {
 
 .heroText h1 {
     font-family: "aquavit", sans-serif;
-    font-weight: 700;            /* base */
+    font-weight: 500;            /* base */
     letter-spacing: 0.02em;      /* optional: helps with reflow look */
     cursor: default;
     color: white;

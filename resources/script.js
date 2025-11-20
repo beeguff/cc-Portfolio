@@ -245,6 +245,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// 4GSAP Dynamic font weight based on mouse proximity to letters in .heroText h1
+
 document.addEventListener('DOMContentLoaded', () => {
     const heroTitle = document.querySelector('.heroText h1');
     
@@ -261,9 +263,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const spans = heroTitle.querySelectorAll('span');
 
     // 2. Configuration
-    const maxDist = 200;   // The radius of influence (in px)
-    const minWeight = 400; // Base font weight (Resting state)
-    const maxWeight = 800; // Peak font weight (Hover state)
+    const maxDist = 150;   // The radius of influence (in px)
+    const minWeight = 500; // Base font weight (Resting state)
+    const maxWeight = 900; // Peak font weight (Hover state)
 
     // 3. Mouse Move Logic
     heroTitle.addEventListener('mousemove', (e) => {
