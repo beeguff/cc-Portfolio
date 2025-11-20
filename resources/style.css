@@ -222,7 +222,13 @@ header {
 }
 
 .aboutContent h2 {
-    font-size: 2rem;
+    font-size: 2.25rem;
+    background: var(--gradientAll);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
 }
 
 
