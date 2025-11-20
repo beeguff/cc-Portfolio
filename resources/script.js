@@ -170,8 +170,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+
+
+// 3GSAP Inertia hover effect on .tool elements
+
 document.addEventListener('DOMContentLoaded', () => {
-  // Register GSAP + Inertia if available
   try { gsap.registerPlugin(InertiaPlugin); } catch (e) {}
 
   const root = document.querySelector('.toolGrid');
@@ -185,9 +188,18 @@ document.addEventListener('DOMContentLoaded', () => {
     deltaY = e.clientY - oldY;
     oldX = e.clientX;
     oldY = e.clientY;
-  });
+  }, { passive: true });
 
-  // Apply the interaction to each .tool element
+  // ---- knobs you can tweak ----
+  const VEL_MULT   = 12;            // was 20 — lower = shorter fling
+  const VEL_CLAMP  = 25;            // clamp raw mouse delta before multiplying
+  const RESISTANCE = 1500;          // higher = stops sooner (InertiaPlugin)
+  const MAX_DUR    = 0.45;          // cap flight time (InertiaPlugin)
+
+  const PUSH_MULT  = 4;             // fallback push strength (was 6)
+  const PUSH_CLAMP = 30;            // fallback max px (was 50)
+  // -----------------------------
+
   root.querySelectorAll('.tool').forEach((tile) => {
     gsap.set(tile, { willChange: 'transform', transformOrigin: '50% 50%' });
 
@@ -195,38 +207,38 @@ document.addEventListener('DOMContentLoaded', () => {
       gsap.killTweensOf(tile);
 
       const wiggle = {
-        duration: 0.4,
-        rotate: (Math.random() - 0.5) * 20, // smaller tilt range (-10° to +10°)
+        duration: 0.35,
+        rotate: (Math.random() - 0.5) * 16, // tighter tilt
         yoyo: true,
         repeat: 1,
-        ease: 'power1.inOut'
+        ease: 'power1.inOut',
+        scale: 1.03
       };
 
       if (gsap.plugins.InertiaPlugin) {
-        // Real inertia motion (requires InertiaPlugin)
+        // clamp the recent mouse delta before turning into velocity
+        const vx = gsap.utils.clamp(-VEL_CLAMP, VEL_CLAMP, deltaX) * VEL_MULT;
+        const vy = gsap.utils.clamp(-VEL_CLAMP, VEL_CLAMP, deltaY) * VEL_MULT;
+
         const tl = gsap.timeline({ onComplete() { tl.kill(); } });
         tl.to(tile, {
           inertia: {
-            x: { velocity: deltaX * 20, end: 0 },
-            y: { velocity: deltaY * 20, end: 0 }
-          }
+            x: { velocity: vx, end: 0, resistance: RESISTANCE },
+            y: { velocity: vy, end: 0, resistance: RESISTANCE }
+          },
+          duration: MAX_DUR // cap how long the inertia runs
         });
-        tl.fromTo(tile, { rotate: 0, scale: 1 }, { ...wiggle, scale: 1.05 }, '<');
+        tl.fromTo(tile, { rotate: 0, scale: 1 }, wiggle, '<');
       } else {
-        // Fallback pseudo inertia
-        const pushX = gsap.utils.clamp(-50, 50, deltaX * 6);
-        const pushY = gsap.utils.clamp(-50, 50, deltaY * 6);
+        // fallback: smaller push & clamp
+        const pushX = gsap.utils.clamp(-PUSH_CLAMP, PUSH_CLAMP, deltaX * PUSH_MULT);
+        const pushY = gsap.utils.clamp(-PUSH_CLAMP, PUSH_CLAMP, deltaY * PUSH_MULT);
 
         const tl = gsap.timeline({ onComplete() { tl.kill(); } });
-        tl.to(tile, { x: `+=${pushX}`, y: `+=${pushY}`, duration: 0.18, ease: 'power2.out' });
-        tl.to(tile, { x: 0, y: 0, duration: 0.5, ease: 'power3.out' }, '>');
-        tl.fromTo(tile, { rotate: 0, scale: 1 }, { ...wiggle, scale: 1.05 }, '<');
+        tl.to(tile, { x: `+=${pushX}`, y: `+=${pushY}`, duration: 0.16, ease: 'power2.out' })
+          .to(tile, { x: 0, y: 0, duration: 0.4, ease: 'power3.out' }, '>');
+        tl.fromTo(tile, { rotate: 0, scale: 1 }, wiggle, '<');
       }
-    });
-
-    // Smoothly reset when leaving
-    tile.addEventListener('mouseleave', () => {
-      gsap.to(tile, { x: 0, y: 0, rotate: 0, scale: 1, duration: 0.35, ease: 'power2.out' });
     });
   });
 });

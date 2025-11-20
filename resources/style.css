@@ -30,26 +30,21 @@
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: "ohno-softie-variable", sans-serif;
-    font-variation-settings: "wght" 600;
+    font-family: aquavit, sans-serif;
+    font-weight: 600;
 }
 
 .eyebrow {
+    font-family: owners-xnarrow, sans-serif;
     font-size: 1rem;
     font-weight: bold;
     text-transform: uppercase;
     opacity: 0.65;
-    letter-spacing: 0.0625rem;
+    letter-spacing: 0.0825rem;
 }
 
 /* ----- NAV ----- */
 
-.hero {
-  view-timeline-name: --hero;
-  view-timeline-axis: block;
-  height: var(--heroHeight);
-  position: relative;
-}
 
 /* Fixed nav, transparent base, isolate stacking so ::before can go behind */
 nav {
@@ -111,7 +106,7 @@ nav a:hover {
 }
 
 .navName {
-    font-family: "ohno-softie-variable", sans-serif;
+    font-family: aquavit, sans-serif;
     font-weight: 500;
     font-style: italic;
     font-size: 2.5rem;
@@ -121,7 +116,7 @@ nav a:hover {
 }
 
 .navpersand {
-    font-family: "ohno-softie-variable", sans-serif;
+    font-family: aquavit, sans-serif;
     font-weight: 700;
     font-style: italic;
     letter-spacing: 0.1rem;
@@ -146,9 +141,11 @@ nav a:hover {
 }
 
 .hero h3 {
+    font-family: owners-xnarrow, sans-serif;
     color: white;
     text-align: center;
-    letter-spacing: 0.1rem;
+    letter-spacing: 0.12rem;
+    text-transform: uppercase;
     font-size: 1.5rem;
     z-index: 3;
     opacity: 0.75;
@@ -407,6 +404,7 @@ header {
     border-radius: var(--radMed);
     box-shadow: 0 0 18px rgba(0, 0, 0, 0.1);
     background-color: white;
+    transition: var(--timingReg);
 }
 
 .tool img {
