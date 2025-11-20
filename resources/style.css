@@ -219,7 +219,7 @@ header {
     justify-content: center;
     align-items: center;
     gap: 32px;
-    padding: 80px;
+    padding: 124px 32px;
     background-color: beige;
         position: relative; /* so Draggable can read bounds properly */
         overflow: hidden;   /* optional: keep the image fully inside visually */
