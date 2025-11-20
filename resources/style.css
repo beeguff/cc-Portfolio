@@ -130,6 +130,11 @@ nav a:hover {
     letter-spacing: 0.1rem;
 }
 
+.myLogo {
+    width: 100px;
+    height: auto;
+}   
+
 
 /* ----- HERO ----- */
 .hero {
