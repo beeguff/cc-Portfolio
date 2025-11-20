@@ -318,8 +318,8 @@ document.addEventListener('DOMContentLoaded', () => {
     heroTitle.addEventListener('mouseleave', () => {
         gsap.to(spans, {
             fontWeight: minWeight,
-            duration: 0.5,
-            ease: 'power2.out'
+            duration: 0.2,
+            ease: 'power3.out'
         });
     });
 });
