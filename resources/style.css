@@ -37,7 +37,6 @@ p {
     font-size: 1rem;
     line-height: 1.25;
     letter-spacing: 0.05em;
-    color: #333;
 }
 
 .eyebrow {
@@ -289,10 +288,38 @@ header {
 
 /* ----- PROJECTS ----- */
 .projectSection {
-    padding: 96px 48px 124px;
+    position: relative; /* Essential: traps the absolute image inside */
+    z-index: 1;         /* Establish stacking context */
+    padding: 124px 48px 148px;
     width: 100%;
     background-color: var(--colorSecondary);
     transition: var(--timingSnappy);
+}
+
+/* The dynamic background image */
+.project-bg-overlay {
+    position: absolute;
+    inset: 0;           /* Fill the whole section */
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none; /* Let clicks pass through to cards */
+    z-index: -1;          /* Sit behind the content */
+    
+    opacity: 0;           /* Hidden by default */
+    transition: opacity 0.4s ease-out;
+    
+    /* The "Colorized" Effect */
+    filter: grayscale(100%) contrast(110%) blur(8px); 
+    mix-blend-mode: multiply; 
+}
+
+/* Ensure your content stays on top of the image */
+.projectSection h2,
+.projectsContainer {
+    position: relative;
+    z-index: 2;
 }
 
 .projectSection h2 {

@@ -1,20 +1,37 @@
-// Change project section background color on card hover
+// Change project section background color & image on card hover
 document.addEventListener('DOMContentLoaded', () => {
   const projectSection = document.querySelector('.projectSection');
   const cards = document.querySelectorAll('.projectCard');
 
-  cards.forEach(card => {
-    // Get the computed color variable for this card
-    const cardColor = getComputedStyle(card).getPropertyValue('--projColor');
+  if (!projectSection) return;
 
-    // Mouse enters: change the section background
+  // 1. Create the background overlay element dynamically
+  const bgOverlay = document.createElement('div');
+  bgOverlay.classList.add('project-bg-overlay');
+  projectSection.appendChild(bgOverlay);
+
+  cards.forEach(card => {
+    // Get the computed color variable and the image source
+    const cardColor = getComputedStyle(card).getPropertyValue('--projColor');
+    const cardImg = card.querySelector('img'); 
+    const imgSrc = cardImg ? cardImg.src : '';
+
+    // Mouse enters: update color AND image
     card.addEventListener('mouseenter', () => {
+      // Change background color
       projectSection.style.backgroundColor = cardColor;
+      
+      // Change background image
+      if (imgSrc) {
+        bgOverlay.style.backgroundImage = `url(${imgSrc})`;
+        bgOverlay.style.opacity = '0.3'; // Adjust this (0.1 - 0.5) for intensity
+      }
     });
 
-    // Mouse leaves: reset background to default
+    // Mouse leaves: reset
     card.addEventListener('mouseleave', () => {
       projectSection.style.backgroundColor = '';
+      bgOverlay.style.opacity = '0';
     });
   });
 });
