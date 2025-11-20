@@ -311,7 +311,7 @@ header {
     transition: opacity 0.4s ease-out;
     
     /* The "Colorized" Effect */
-    filter: grayscale(100%) contrast(110%) blur(8px); 
+    filter: grayscale(100%) brightness(125%); 
     mix-blend-mode: multiply; 
 }
 
