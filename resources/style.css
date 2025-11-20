@@ -135,6 +135,20 @@ nav a:hover {
     height: auto;
 }   
 
+.myLogo:hover {
+    .logoSecondary {
+        fill: #eeff6e;
+        transition: var(--timingReg);
+    }
+}   
+
+.logoPrimary {
+    fill: white;
+}
+
+.logoSecondary {
+    fill: white;
+}
 
 /* ----- HERO ----- */
 .hero {
