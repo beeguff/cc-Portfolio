@@ -54,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // GSAP Animations
+
+// 1GSAP Draggable with fling physics on .aboutImageWrapper
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('.aboutContainer');
   const frame = document.querySelector('.aboutImageWrapper');
@@ -241,4 +243,64 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const heroTitle = document.querySelector('.heroText h1');
+    
+    if (!heroTitle) return;
+
+    // 1. Split the text into spans
+    const text = heroTitle.textContent;
+    const chars = text.split('').map(char => {
+        // Preserve spaces by using a non-breaking space or ensuring the span has width
+        return char === ' ' ? '<span>&nbsp;</span>' : `<span>${char}</span>`;
+    }).join('');
+    
+    heroTitle.innerHTML = chars;
+    const spans = heroTitle.querySelectorAll('span');
+
+    // 2. Configuration
+    const maxDist = 200;   // The radius of influence (in px)
+    const minWeight = 400; // Base font weight (Resting state)
+    const maxWeight = 800; // Peak font weight (Hover state)
+
+    // 3. Mouse Move Logic
+    heroTitle.addEventListener('mousemove', (e) => {
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        spans.forEach(span => {
+            // Get the center of the letter
+            const rect = span.getBoundingClientRect();
+            const spanX = rect.left + (rect.width / 2);
+            const spanY = rect.top + (rect.height / 2);
+
+            // Calculate distance (Hypotenuse)
+            const dist = Math.hypot(mouseX - spanX, mouseY - spanY);
+
+            // Map distance to weight
+            // If distance is 0, weight is maxWeight. If distance is > maxDist, weight is minWeight.
+            let targetWeight = gsap.utils.mapRange(0, maxDist, maxWeight, minWeight, dist);
+
+            // Clamp the value so it doesn't go below minWeight
+            targetWeight = gsap.utils.clamp(minWeight, maxWeight, targetWeight);
+
+            // Animate smoothly
+            gsap.to(span, {
+                fontWeight: targetWeight,
+                duration: 0.2,  // Short duration for snappy feel
+                overwrite: 'auto'
+            });
+        });
+    });
+
+    // 4. Reset on Mouse Leave
+    heroTitle.addEventListener('mouseleave', () => {
+        gsap.to(spans, {
+            fontWeight: minWeight,
+            duration: 0.5,
+            ease: 'power2.out'
+        });
+    });
 });

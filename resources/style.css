@@ -2,9 +2,6 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: "omnes-cond", sans-serif;
-    font-weight: 400;
-    font-style: normal;
 }
 
 :root {
@@ -32,6 +29,15 @@
 h1, h2, h3, h4, h5, h6 {
     font-family: aquavit, sans-serif;
     font-weight: 600;
+}
+
+p {
+    font-family: "owners", sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.25;
+    letter-spacing: 0.05em;
+    color: #333;
 }
 
 .eyebrow {
@@ -86,8 +92,8 @@ nav::before {
 }
 
 nav ul{
-    font-family: "omnes-narrow", sans-serif;
-    font-weight: bold;
+    font-family: "owners-narrow", sans-serif;
+    font-weight: 400;
     font-size: 1.125rem;
     letter-spacing: 0.1rem;
     color: white;
@@ -105,7 +111,7 @@ nav a:hover {
     text-decoration: underline;
 }
 
-.navName {
+.navName a{
     font-family: aquavit, sans-serif;
     font-weight: 500;
     font-style: italic;
@@ -113,6 +119,9 @@ nav a:hover {
     color: white;
     text-transform: uppercase;
     letter-spacing: 0.1rem;
+}
+.navName a:hover {
+    text-decoration: none;
 }
 
 .navpersand {
@@ -131,16 +140,38 @@ nav a:hover {
   background-image: ;
 }
 
-.hero h1 {
+.heroText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    color: white;
+    z-index: 3;
+}
+
+.heroText h1 {
+    font-family: "aquavit", sans-serif;
+    font-weight: 700;            /* base */
+    letter-spacing: 0.02em;      /* optional: helps with reflow look */
+    cursor: default;
     color: white;
     text-align: center;
     text-transform: uppercase;
-    letter-spacing: 0.15rem;
     font-size: 4rem;
     z-index: 3;
 }
 
-.hero h3 {
+/* Add to your existing CSS */
+.heroText h1 span {
+    display: inline-block; /* Allows transforms if you want to add scale later */
+    min-width: 0.3em;      /* Prevents spaces from collapsing to 0 width */
+    will-change: font-weight; /* Performance hint for the browser */
+    transition: color 0.3s ease; /* Optional: if you want color to lag slightly */
+}
+
+.heroText h3 {
     font-family: owners-xnarrow, sans-serif;
     color: white;
     text-align: center;
@@ -169,17 +200,6 @@ header {
   100% {
     background-position: 0% 50%;
   }
-}
-
-.heroText {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    color: white;
-    z-index: 3;
 }
 
 .background-video {
