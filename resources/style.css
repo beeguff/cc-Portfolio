@@ -4,44 +4,52 @@
     padding: 0;
 }
 
-:root {
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden; /* Prevent horizontal scroll on mobile */
+}
 
+:root {
   --colorPrimary: #23a6d5;
   --colorSecondary: #23d5ab;
   --colorTertiary: #e73c7e;
   --accentPrimary: #ee7752;
   --accentSecondary: #9b59b6;
   --neutralMedium: #62788f;
-  --projColor1: var(--colorTertiary); /* alternate purple #5432ab */
+  
+  --projColor1: var(--colorTertiary);
   --projColor2: var(--neutralMedium);
   --projColor3: var(--colorPrimary);
+  
   --radMed: 16px;
   --radSm: 8px;
   --radLg: 24px;
+  
   --timingReg: all 0.3s ease-out;
   --timingSnappy: all 0.15s ease-out;
   --timingSlow: all 0.5s ease-out;
+  
   --gradientAll: linear-gradient(-45deg, var(--colorPrimary), var(--colorSecondary), var(--colorTertiary), var(--accentPrimary), var(--accentSecondary));
   --heroHeight: 75vh;
-  timeline-scope: --hero;   /* expose the hero’s named timeline to the page */
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-family: aquavit, sans-serif;
     font-weight: 600;
+    line-height: 1.1;
 }
 
 p {
     font-family: "owners", sans-serif;
     font-weight: 400;
     font-size: 1rem;
-    line-height: 1.25;
+    line-height: 1.4;
     letter-spacing: 0.05em;
 }
 
 .eyebrow {
     font-family: owners-xnarrow, sans-serif;
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: bold;
     text-transform: uppercase;
     opacity: 0.65;
@@ -49,9 +57,6 @@ p {
 }
 
 /* ----- NAV ----- */
-
-
-/* Fixed nav, transparent base, isolate stacking so ::before can go behind */
 nav {
   position: fixed;
   inset: 0 0 auto 0;
@@ -61,10 +66,10 @@ nav {
   justify-content: space-between;
   z-index: 1000;
   background: transparent;
-  isolation: isolate;           /* lets ::before sit behind links */
+  isolation: isolate;
+  transition: padding 0.3s ease;
 }
 
-/* Gradient overlay (paused + invisible by default) */
 nav::before {
   content: "";
   position: absolute;
@@ -75,19 +80,13 @@ nav::before {
   background-size: 400% 400%;
   opacity: 0;
   animation: gradient 15s linear infinite;
-  animation-play-state: paused; /* don't animate until turned on */
+  animation-play-state: paused;
+  transition: opacity 250ms ease;
 }
 
-/* When scrolled past hero, fade it in & start animating */
 .nav-on::before {
   opacity: 1;
   animation-play-state: running;
-  transition: opacity 250ms ease;  /* smooth reveal */
-}
-
-/* Optional: respect reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  nav::before { animation: none; }
 }
 
 nav ul{
@@ -104,58 +103,45 @@ nav ul{
 nav a {
     text-decoration: none;
     color: white;
+    transition: opacity 0.2s;
 }
 
 nav a:hover {
     text-decoration: underline;
 }
 
-.navName a{
-    font-family: aquavit, sans-serif;
-    font-weight: 500;
-    font-style: italic;
-    font-size: 2.5rem;
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 0.1rem;
-}
-.navName a:hover {
-    text-decoration: none;
-}
-
-.navpersand {
-    font-family: aquavit, sans-serif;
-    font-weight: 700;
-    font-style: italic;
-    letter-spacing: 0.1rem;
-}
-
 .myLogo {
     width: 100px;
     height: auto;
+    display: block;
+    transition: transform 0.3s ease;
 }   
 
-.myLogo:hover {
-    .logoSecondary {
-        fill: #eeff6e;
-        transition: var(--timingReg);
-    }
+.myLogo:hover .logoSecondary {
+    fill: #eeff6e;
+    transition: var(--timingReg);
 }   
 
-.logoPrimary {
+.logoPrimary, .logoSecondary {
     fill: white;
-}
-
-.logoSecondary {
-    fill: white;
+    transition: fill 0.3s ease;
 }
 
 /* ----- HERO ----- */
+/* Ensure the parent establishes a flex context so height passes down correctly */
 .hero {
   view-timeline-name: --hero;
   view-timeline-axis: block;
-  min-height: var(--heroHeight);
-  background-image: ;
+  min-height: var(--heroHeight); /* Keep your variable */
+  height: var(--heroHeight);     /* Enforce explicit height for child inheritance */
+  position: relative;
+  overflow: hidden;
+  background: var(--gradientAll);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  display: flex;                 /* ADDED: Makes centering children easier */
+  align-items: center;           /* ADDED: Vertically centers content */
+  justify-content: center;       /* ADDED: Horizontally centers content */
 }
 
 .heroText {
@@ -163,30 +149,34 @@ nav a:hover {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 100%;
-    width: 100%;
+    /* width/height 100% ensures it fills the flex parent established above */
+    width: 100%; 
+    height: 100%; 
     color: white;
     z-index: 3;
+    position: relative;
+    padding: 0 24px;
 }
 
+/* Clamp is powerful: it sets a min, preferred, and max size automatically */
 .heroText h1 {
     font-family: "aquavit", sans-serif;
-    font-weight: 500;            /* base */
-    letter-spacing: 0.02em;      /* optional: helps with reflow look */
+    font-weight: 500;
+    letter-spacing: 0.02em;
     cursor: default;
     color: white;
     text-align: center;
     text-transform: uppercase;
-    font-size: 5.5rem;
+    font-size: clamp(3rem, 8vw, 5.5rem); /* Responsive scaling */
     z-index: 3;
+    margin-bottom: 16px;
 }
 
-/* Add to your existing CSS */
 .heroText h1 span {
-    display: inline-block; /* Allows transforms if you want to add scale later */
-    min-width: 0.3em;      /* Prevents spaces from collapsing to 0 width */
-    will-change: font-weight; /* Performance hint for the browser */
-    transition: color 0.3s ease; /* Optional: if you want color to lag slightly */
+    display: inline-block;
+    min-width: 0.3em;
+    will-change: font-weight;
+    transition: color 0.3s ease;
 }
 
 .heroText h3 {
@@ -195,34 +185,14 @@ nav a:hover {
     text-align: center;
     letter-spacing: 0.12rem;
     text-transform: uppercase;
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 3vw, 1.5rem);
     z-index: 3;
     opacity: 0.75;
 }
 
-header {
-    width: 100%;
-    height: var(--heroHeight);
-    background: var(--gradientAll);
-    background-size: 400% 400%;
-    animation: gradient 15s ease infinite;
-}
-
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
 .background-video {
     width: 100vw;
-    height: var(--heroHeight);
+    height: 100%;
     object-fit: cover;
     position: absolute;
     top: 0;
@@ -237,21 +207,21 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 32px;
+    gap: 48px;
     padding: 124px 32px;
     background-color: whitesmoke;
-        position: relative; /* so Draggable can read bounds properly */
-        overflow: hidden;   /* optional: keep the image fully inside visually */
+    position: relative;
+    overflow: hidden;
 }
 
 .aboutContent {
-    max-width: 300px;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-      animation: transScroll linear both;
-  animation-timeline: view();
-  animation-range: entry 0% to exit 75%;
+    gap: 16px;
+    animation: transScroll linear both;
+    animation-timeline: view();
+    animation-range: entry 0% to exit 75%;
 }
 
 @keyframes transScroll{
@@ -260,91 +230,82 @@ header {
 }
 
 .aboutContent h2 {
-    font-size: 2.25rem;
+    font-size: clamp(2rem, 4vw, 2.25rem);
     background: var(--gradientAll);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     background-size: 400% 400%;
     animation: gradient 15s ease infinite;
+    padding-bottom: 0.1em; /* Prevents font clipping */
 }
-
 
 .aboutImageWrapper {
-  width: 50%;
-  max-width: 300px;
+  width: 100%;
+  max-width: 320px;
   aspect-ratio: 1 / 1;
   z-index: 1;
-  height: auto;
   border-radius: var(--radMed);
   overflow: hidden;
+  cursor: grab;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
-
 
 .aboutImageWrapper:active {
   cursor: grabbing;
 }
-
-.aboutImageWrapper:hover img {
-    transform: scale(1.15) rotate(2deg);
-}   
 
 .aboutImageWrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: var(--timingReg);
+    pointer-events: none; /* Prevents dragging the img element itself */
 }
-
 
 /* ----- PROJECTS ----- */
 .projectSection {
-    position: relative; /* Essential: traps the absolute image inside */
-    z-index: 1;         /* Establish stacking context */
+    position: relative;
+    z-index: 1;
     padding: 124px 48px 148px;
     width: 100%;
     background-color: var(--colorSecondary);
-    transition: var(--timingSnappy);
+    transition: background-color 0.3s ease-out;
 }
 
-/* The dynamic background image */
 .project-bg-overlay {
     position: absolute;
-    inset: 0;           /* Fill the whole section */
+    inset: 0;
     width: 100%;
     height: 100%;
     background-size: cover;
     background-position: center;
-    pointer-events: none; /* Let clicks pass through to cards */
-    z-index: -1;          /* Sit behind the content */
-    
-    opacity: 0;           /* Hidden by default */
+    pointer-events: none;
+    z-index: 0; /* Sit behind content */
+    opacity: 0;
     transition: opacity 0.4s ease-out;
-    
-    /* The "Colorized" Effect */
     filter: grayscale(100%) brightness(125%); 
     mix-blend-mode: multiply; 
 }
 
-/* Ensure your content stays on top of the image */
 .projectSection h2,
 .projectsContainer {
     position: relative;
-    z-index: 2;
+    z-index: 2; /* Sit on top of overlay */
 }
 
 .projectSection h2 {
     text-align: left;
-    font-size: 2.5rem;
+    font-size: clamp(2rem, 5vw, 2.5rem);
     color: white;
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 0 auto 48px auto;
 }
 
 .projectsContainer {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     margin: 0 auto;
     gap: 32px;
     max-width: 1400px;
@@ -355,7 +316,11 @@ header {
     box-shadow: 0 2px 18px rgba(0, 0, 0, 0.1);
     text-align: left;
     width: 33%;
+    background: white;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: var(--timingReg);
 }
 
 .projectImgContainer {
@@ -368,83 +333,49 @@ header {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.4s ease;
 }
 
-.projectText{
-    padding: 16px 24px 24px;
-    margin-top: -2px;
+.projectText {
+    padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 8px;
     background-color: whitesmoke;
+    flex-grow: 1;
 }
+
 .projectTitle {
     font-size: 1.25rem;
     font-weight: 600;
+    line-height: 1.2;
 }
 
-.projectDescription {
-    font-size: 1rem;
-    color: #333;
-}
+/* Desktop-only Interactions (Hover transforms) */
+@media (min-width: 1025px) {
+    .leftCard { transform: translateY(20px) rotate(-2deg); --projColor: var(--projColor1); }
+    .centerCard { transform: translateY(-20px); --projColor: var(--projColor2); }
+    .rightCard { transform: translateY(20px) rotate(2deg); --projColor: var(--projColor3); }
 
-.leftCard {
-    transform: translateY(20px) rotate(-2deg);
-    --projColor: var(--projColor1);
-}
+    .projectCard:hover {
+        border-radius: var(--radLg);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        z-index: 10;
+    }
 
-.centerCard {
-    transform: translateY(-20px);
-    --projColor: var(--projColor2);
-}
+    .projectCard.leftCard:hover { transform: translateY(10px) rotate(-4deg) scale(1.02); color: var(--projColor1); }
+    .projectCard.leftCard:hover img { transform: scale(1.1) rotate(2deg); }
 
-.rightCard {
-    transform: translateY(20px) rotate(2deg);
-    --projColor: var(--projColor3);
-}
+    .projectCard.centerCard:hover { transform: translateY(-30px) rotate(2deg) scale(1.02); color: var(--projColor2); }
+    .projectCard.centerCard:hover img { transform: scale(1.1) rotate(-2deg); }
 
-.projectCard,
-.projectCard img,
-.projectText,
-.projectTitle,
-.projectText p {
-    transition: var(--timingReg);
-}
-
-.projectCard:hover {
-    border-radius: var(--radLg);
-    box-shadow: 0 2px 30px rgba(0, 0, 0, 0.15);
-}
-
-.projectCard.leftCard:hover {
-    transform: translateY(18px) rotate(-4deg);
-    color: var(--projColor1);
-}
-.projectCard.leftCard:hover img {
-    transform: scale(1.25) rotate(3deg);
-}
-
-.projectCard.centerCard:hover {
-    transform: translateY(-18px) rotate(2deg);
-    color: var(--projColor2);
-}
-.projectCard.centerCard:hover img {
-    transform: scale(1.25) rotate(-2deg);
-}
-
-.projectCard.rightCard:hover {
-    transform: translateY(18px) rotate(4deg);
-    color: var(--projColor3);
-}
-
-.projectCard.rightCard:hover img {
-    transform: scale(1.25) rotate(-3deg);
+    .projectCard.rightCard:hover { transform: translateY(10px) rotate(4deg) scale(1.02); color: var(--projColor3); }
+    .projectCard.rightCard:hover img { transform: scale(1.1) rotate(-2deg); }
 }
 
 /* ----- TOOLS ----- */
-
 .toolSection {
-    padding: 64px 48px;
+    padding: 80px 48px;
     width: 100%;
     background-color: whitesmoke;
     transition: var(--timingSnappy);
@@ -453,45 +384,136 @@ header {
 .toolGrid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: 24px;
     margin: 0 auto;
-    max-width: 640px;
+    max-width: 800px;
 }
 
 .tool {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 24px;
     aspect-ratio: 1 / 1;
     border-radius: var(--radMed);
-    box-shadow: 0 0 18px rgba(0, 0, 0, 0.1);
-    background-color: whitesm;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    background-color: white;
     transition: var(--timingReg);
 }
 
 .tool img {
-    width: 50%;
+    width: 60%;
     height: auto;
     object-fit: contain;
     filter: grayscale(100%);
     opacity: 0.5;
+    transition: all 0.3s ease;
 }
 
 .tool:hover img {
     filter: none;
     opacity: 1;
+    transform: scale(1.1);
 }
 
 /* ----- FOOTER ----- */
 footer {
-    padding: 32px;
+    padding: 40px;
     text-align: center;
     color: white;
     font-size: 0.875rem;
     background: var(--gradientAll);
     background-size: 400% 400%;
     animation: gradient 20s ease infinite;
+}
+
+/* =========================================
+   RESPONSIVE MEDIA QUERIES
+   ========================================= */
+
+/* Tablet (iPad Portait) & Small Laptops (max-width: 1024px) */
+@media (max-width: 1024px) {
+
     
+    /* Stack projects vertically on tablet */
+    .projectsContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .projectCard {
+        width: 80%;
+        transform: none !important; /* Disable the rotation/translate */
+        margin-bottom: 24px;
+    }
+    
+    /* Simple lift effect for touch devices */
+    .projectCard:hover {
+        transform: translateY(-5px) !important;
+    }
+    
+    .toolGrid {
+        grid-template-columns: repeat(3, 1fr); /* 3 cols on tablet */
+    }
+}
+
+/* Mobile Devices (max-width: 768px) */
+@media (max-width: 768px) {
+    /* NAV */
+    nav {
+        padding: 12px 16px;
+        flex-direction: column;
+        background: rgba(0,0,0,0.1); /* Subtle background for legibility */
+        backdrop-filter: blur(5px);
+    }
+    
+    nav ul {
+        margin-top: 12px;
+        gap: 16px;
+        font-size: 0.9rem;
+    }
+    
+    .myLogo {
+        width: 80px; /* Smaller logo */
+    }
+
+    /* HERO */
+    .hero {
+        height: 65vh; /* Shorter hero on mobile */
+    }
+
+    /* ABOUT */
+    
+    .aboutContent {
+        align-items: center;
+    }
+    .aboutContainer {
+        flex-direction: column-reverse;
+        text-align: center;
+        padding: 64px 24px;
+        gap: 32px;
+    }
+
+    /* PROJECTS */
+    .projectSection {
+        padding: 64px 48px;
+    }
+    
+    .projectCard {
+        width: 100%; /* Full width cards */
+    }
+
+    /* TOOLS */
+    .toolSection {
+        padding: 64px 24px;
+    }
+    
+    .toolGrid {
+        grid-template-columns: repeat(2, 1fr); /* 2 cols on mobile */
+        gap: 16px;
+    }
+    
+    .tool {
+        padding: 16px;
+    }
 }
