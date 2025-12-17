@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
       gsap.fromTo(path,
         { morphSVG: down },
         {
-          duration: 2,
+          duration: 4,
           morphSVG: center,
           ease: `elastic.out(${1 + variation}, ${1 - variation})`,
           overwrite: true
