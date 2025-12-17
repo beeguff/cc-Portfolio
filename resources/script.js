@@ -330,5 +330,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+  // ... your sections 1–5 ...
+
+  // 6. FOOTER BOUNCY DIVIDER (put this BEFORE the closing "});")
+  console.log('GSAP?', !!window.gsap, 'ScrollTrigger?', !!window.ScrollTrigger, 'MorphSVG?', !!window.MorphSVGPlugin);
+
+  const path = document.querySelector('#bouncy-path');
+  const footer = document.querySelector('.footer');
+
+  if (!path || !footer) {
+    console.warn('Footer morph skipped: missing .footer or #bouncy-path in DOM');
+    return;
+  }
+
+  if (!window.ScrollTrigger || !window.MorphSVGPlugin) {
+    console.warn('Footer morph skipped: ScrollTrigger and/or MorphSVGPlugin not loaded');
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger, MorphSVGPlugin);
+
+  const down   = 'M0-0.3C0-0.3,464,156,1139,156S2278-0.3,2278-0.3V683H0V-0.3z';
+  const center = 'M0-0.3C0-0.3,464,0,1139,0s1139-0.3,1139-0.3V683H0V-0.3z';
+
+  ScrollTrigger.create({
+    trigger: footer,
+    start: 'top bottom',
+    markers: false, // <--- TEMP: shows start/end markers on screen
+    onEnter(self) {
+      const variation = gsap.utils.clamp(-0.35, 0.35, self.getVelocity() / 10000);
+
+      gsap.fromTo(path,
+        { morphSVG: down },
+        {
+          duration: 2,
+          morphSVG: center,
+          ease: `elastic.out(${1 + variation}, ${1 - variation})`,
+          overwrite: true
+        }
+      );
+    }
+  });
+
+  // helpful when fonts/video load shift layout
+  window.addEventListener('load', () => ScrollTrigger.refresh());
 
 });
+
+
+
